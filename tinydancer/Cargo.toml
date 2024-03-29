@@ -16,8 +16,8 @@ categories = ["command-line-utilities","blockchain"]
 [dependencies]
 tokio = {version="1.35.1", features=["full"] }
 # solana-ledger={git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch" }
-solana-rpc-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}
-solana-rpc-client-api = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}
+solana-rpc-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
+solana-rpc-client-api = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
 # solana-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}
 solana-sdk = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version = "1.18.7"}
 # solana-tpu-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}
