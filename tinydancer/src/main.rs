@@ -2,7 +2,7 @@
 // #![allow(unused_imports)]
 // #![allow(dead_code)]
 // #![feature(mutex_unlock)]
-#![feature(inherent_associated_types)]
+// #![feature(inherent_associated_types)]
 mod tinydancer;
 use crossterm::style::Stylize;
 use reqwest::header::{ACCEPT, CONTENT_TYPE};
