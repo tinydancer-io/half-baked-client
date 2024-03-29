@@ -61,8 +61,8 @@ tiny-logger={path="../logger", version="1.16.0"}
 # solana-measure = "1.15.0"
 clap = { version = "3.2.23", features = ["derive", "env"] }
 tower-http = { version = "0.4.0", features = ["full"] }
-hyper = "0.14.25"
-tower = "0.4.13"
+# hyper = "0.14.25"
+# tower = "0.4.13"
 home = "0.5.4"
 colored = "2.0.0"
 tracing = "0.1.37"
