@@ -21,7 +21,7 @@ macro_rules! block_on {
 #[macro_export]
 macro_rules! datapoint_valid_signature {
     ($key:expr, $sig:expr) => {
-        use colored::Colorize;
+        // use colored::Colorize;
         tiny_logger::logs::info!("Validator {:?} with vote {:?} is valid", $key, $sig);
     };
 }

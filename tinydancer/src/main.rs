@@ -6,7 +6,6 @@
 mod tinydancer;
 use crossterm::style::Stylize;
 use reqwest::header::{ACCEPT, CONTENT_TYPE};
-// use sampler::{pull_and_verify_shreds, ArchiveConfig};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use spinoff::{spinners, Color, Spinner};
