@@ -1,9 +1,9 @@
 use std::{str::FromStr, sync::Arc};
 
 use crate::{
-    datapoint_valid_signature, send_rpc_call,
+    convert_to_websocket, datapoint_valid_signature, send_rpc_call,
     tinydancer::{endpoint, ClientService, Cluster},
-    utils::query_account,
+    utils::{monitor_and_verify_updates, query_account, send_transaction},
     ValidatorSet,
 };
 use anyhow::anyhow;
@@ -52,70 +52,80 @@ impl ClientService<TransactionServiceConfig> for TransactionService {
         let handler = tokio::spawn(async move {
             info!("Source Account: {:?}", config.source_account);
             info!("Copy Account: {:?}", config.copy_pda);
-            let source_account =
+            let source_account_data =
                 query_account(&config.source_account, endpoint(config.cluster.clone()));
             let keypair = read_keypair_file(config.signer_path).unwrap();
 
             let rpc_url = endpoint(config.cluster);
-            let vote_pubkeys: Vec<String> = validator_set
-                .lock()
-                .await
-                .iter()
-                .map(|item| item.0.clone())
-                .collect();
-            // println!("keys: {:?}", vote_pubkeys);
-            let vote_signatures = request_vote_signatures(config.slot, rpc_url, vote_pubkeys).await;
-            // println!("votes: {:?}", vote_signatures);
-            let signatures: Vec<Signature> = vote_signatures
-                .as_ref()
-                .unwrap()
-                .result
-                .vote_signature
-                .iter()
-                .map(|sig| Signature::from_str(sig.as_str()))
-                .flatten()
-                .collect();
-            let vote_messages: Vec<solana_sdk::message::Message> = vote_signatures
-                .unwrap()
-                .result
-                .vote_messages
-                .iter()
-                .map(|raw_message| bincode::deserialize(raw_message.as_slice()).unwrap())
-                .collect();
-            let vote_pair: Vec<(&Signature, &solana_sdk::message::Message)> =
-                signatures.iter().zip(vote_messages.iter()).collect();
-            //println!("pairs: {:?}", vote_pair);
-            for (signature, message) in vote_pair {
-                let message_pubkey = message.account_keys[0];
-                assert!(
-                    message.account_keys.contains(&VOTE_PROGRAM_ID),
-                    "This txn is not a vote txn"
-                );
-                let validator_set_w = validator_set.lock().await;
-                let maybe_trusted_pubkey =
-                    validator_set_w
-                        .iter()
-                        .find(|(validator_key, active_stake)| {
-                            *validator_key == message_pubkey.to_string()
-                        });
-                match maybe_trusted_pubkey {
-                    Some(key) => {
-                        let validator_pubkey = Pubkey::from_str(key.0.as_str()).unwrap();
-                        let is_signature_valid = signature.verify(
-                            validator_pubkey.to_bytes().as_slice(),
-                            message.serialize().as_slice(),
-                        );
-                        if is_signature_valid {
-                            verified_signatures
-                                .insert(validator_pubkey, (message.clone(), signature.clone()));
-                            datapoint_valid_signature!(validator_pubkey, signature);
-                        } else {
-                            println!("{:?} is not valid", key);
-                        }
-                    }
-                    None => panic!("not a trusted validator: {:?}", message_pubkey),
-                }
-            }
+            send_transaction(
+                keypair,
+                rpc_url.clone(),
+                convert_to_websocket!(rpc_url),
+                config.copy_program,
+                &config.source_account,
+                config.copy_pda,
+            );
+            println!("Sent txn!");
+            monitor_and_verify_updates(&config.source_account, &source_account_data).await;
+            // let vote_pubkeys: Vec<String> = validator_set
+            //     .lock()
+            //     .await
+            //     .iter()
+            //     .map(|item| item.0.clone())
+            //     .collect();
+            // // println!("keys: {:?}", vote_pubkeys);
+            // let vote_signatures = request_vote_signatures(config.slot, rpc_url, vote_pubkeys).await;
+            // // println!("votes: {:?}", vote_signatures);
+            // let signatures: Vec<Signature> = vote_signatures
+            //     .as_ref()
+            //     .unwrap()
+            //     .result
+            //     .vote_signature
+            //     .iter()
+            //     .map(|sig| Signature::from_str(sig.as_str()))
+            //     .flatten()
+            //     .collect();
+            // let vote_messages: Vec<solana_sdk::message::Message> = vote_signatures
+            //     .unwrap()
+            //     .result
+            //     .vote_messages
+            //     .iter()
+            //     .map(|raw_message| bincode::deserialize(raw_message.as_slice()).unwrap())
+            //     .collect();
+            // let vote_pair: Vec<(&Signature, &solana_sdk::message::Message)> =
+            //     signatures.iter().zip(vote_messages.iter()).collect();
+            // //println!("pairs: {:?}", vote_pair);
+            // for (signature, message) in vote_pair {
+            //     let message_pubkey = message.account_keys[0];
+            //     assert!(
+            //         message.account_keys.contains(&VOTE_PROGRAM_ID),
+            //         "This txn is not a vote txn"
+            //     );
+            //     let validator_set_w = validator_set.lock().await;
+            //     let maybe_trusted_pubkey =
+            //         validator_set_w
+            //             .iter()
+            //             .find(|(validator_key, active_stake)| {
+            //                 *validator_key == message_pubkey.to_string()
+            //             });
+            //     match maybe_trusted_pubkey {
+            //         Some(key) => {
+            //             let validator_pubkey = Pubkey::from_str(key.0.as_str()).unwrap();
+            //             let is_signature_valid = signature.verify(
+            //                 validator_pubkey.to_bytes().as_slice(),
+            //                 message.serialize().as_slice(),
+            //             );
+            //             if is_signature_valid {
+            //                 verified_signatures
+            //                     .insert(validator_pubkey, (message.clone(), signature.clone()));
+            //                 datapoint_valid_signature!(validator_pubkey, signature);
+            //             } else {
+            //                 println!("{:?} is not valid", key);
+            //             }
+            //         }
+            //         None => panic!("not a trusted validator: {:?}", message_pubkey),
+            //     }
+            // }
         });
         Self { handler }
     }

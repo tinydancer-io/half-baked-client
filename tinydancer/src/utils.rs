@@ -6,6 +6,7 @@ use solana_sdk::commitment_config::{CommitmentConfig, CommitmentLevel};
 use solana_sdk::pubkey::Pubkey;
 use solana_sdk::signature::{Keypair, Signature, Signer};
 use std::str::FromStr;
+use std::time::Duration;
 pub fn query_account(addr: &Pubkey, url: String) -> Account {
     // let url = DEFAULT_RPC_URL.to_string();
     let client = RpcClient::new(url);
@@ -21,7 +22,7 @@ use tokio::io::AsyncReadExt;
 use tokio::net::TcpStream;
 use tokio::runtime::Runtime;
 extern crate alloc;
-async fn monitor_and_verify_updates(
+pub async fn monitor_and_verify_updates(
     rpc_pubkey: &Pubkey,
     rpc_account: &Account,
 ) -> anyhow::Result<()> {
@@ -35,14 +36,15 @@ async fn monitor_and_verify_updates(
         .read(&mut buffer)
         .await
         .expect("unable to read to mutable buffer");
-    println!("got object");
+    println!("Reading stream");
     loop {
         if n == 0 {
+            tokio::time::sleep(Duration::from_millis(400)).await;
             n = stream
                 .read(&mut buffer)
                 .await
                 .expect("unable to read to mutable buffer");
-            println!("got object {:?}", n);
+
             // anyhow::bail!("Connection closed");
         } else {
             break;
