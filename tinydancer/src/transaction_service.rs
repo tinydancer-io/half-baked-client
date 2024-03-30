@@ -12,7 +12,7 @@ use colored::Colorize;
 use serde::{Deserialize, Serialize};
 use solana_sdk::{
     pubkey::Pubkey,
-    signature::{Signable, Signature},
+    signature::{read_keypair_file, Signable, Signature},
     vote::program::ID as VOTE_PROGRAM_ID,
 };
 use std::collections::HashMap;
@@ -44,15 +44,18 @@ impl ClientService<TransactionServiceConfig> for TransactionService {
         // let validator_set = Arc::new(
         //     read_validator_set(&config.validator_set_path).unwrap_or(ValidatorSet::default()),
         // );
-        info!("Source Account: {:?}", config.source_account);
-        let source_account =
-            query_account(&config.source_account, endpoint(config.cluster.clone()));
         let mut verified_signatures: HashMap<Pubkey, (solana_sdk::message::Message, Signature)> =
             HashMap::new();
         let validator_set = config.validator_set;
         // let slot = config.slot;
 
         let handler = tokio::spawn(async move {
+            info!("Source Account: {:?}", config.source_account);
+            info!("Copy Account: {:?}", config.copy_pda);
+            let source_account =
+                query_account(&config.source_account, endpoint(config.cluster.clone()));
+            let keypair = read_keypair_file(config.signer_path).unwrap();
+
             let rpc_url = endpoint(config.cluster);
             let vote_pubkeys: Vec<String> = validator_set
                 .lock()

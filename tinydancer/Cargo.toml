@@ -14,6 +14,7 @@ categories = ["command-line-utilities","blockchain"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+copy = { path = "../solana-spv-plugin/onchain_programs/programs/copy" }
 tokio = {version="1.35.1", features=["full"] }
 # solana-ledger={git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch" }
 solana-rpc-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
