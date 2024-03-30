@@ -3,6 +3,6 @@ members=["tinydancer","logger", ]
 
 
 [patch.crates-io]
-solana-program = { git = "https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="=1.18.7"} 
+solana-program = { git = "https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"} 
 solana-zk-token-sdk = { git = "https://github.com/tinydancer-io/solana-1.18" ,branch="v1.18.7-branch", version="1.18.7"}
 solana-sdk = { git = "https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
