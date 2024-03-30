@@ -17,6 +17,7 @@ use async_trait::async_trait;
 use futures::{future::join_all, TryFutureExt};
 use rand::seq::index::sample;
 use serde::{Deserialize, Serialize};
+use solana_sdk::pubkey::Pubkey;
 use tiny_logger::logs::info;
 // use log::info;
 // use log4rs;
@@ -46,6 +47,10 @@ pub struct TinyDancerConfig {
     // pub archive_config: ArchiveConfig,
     pub log_path: String,
     pub slot: u64,
+    pub copy_program: Pubkey,
+    pub copy_pda: Pubkey,
+    pub signer_path: String,
+    pub source_account: Pubkey,
 }
 
 // use solana_metrics::datapoint_info;
@@ -70,6 +75,11 @@ impl TinyDancer {
             log_path,
             slot,
             validator_set_path, // archive_config,
+
+            copy_program,
+            copy_pda,
+            signer_path,
+            source_account,
         } = config.clone();
         std::env::set_var("RUST_LOG", "info");
         tiny_logger::setup_file_with_default(&log_path, "RUST_LOG");
@@ -98,6 +108,10 @@ impl TinyDancer {
             validator_set,
             slot,
             current_epoch,
+            copy_program,
+            copy_pda,
+            signer_path,
+            source_account,
         });
 
         transaction_service

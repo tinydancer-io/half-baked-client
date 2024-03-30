@@ -3,6 +3,7 @@ use std::{str::FromStr, sync::Arc};
 use crate::{
     datapoint_valid_signature, send_rpc_call,
     tinydancer::{endpoint, ClientService, Cluster},
+    utils::query_account,
     ValidatorSet,
 };
 use anyhow::anyhow;
@@ -28,6 +29,11 @@ pub struct TransactionServiceConfig {
     pub validator_set: Arc<Mutex<Vec<(String, u64)>>>,
     pub slot: u64,
     pub current_epoch: u64,
+
+    pub copy_program: Pubkey,
+    pub copy_pda: Pubkey,
+    pub signer_path: String,
+    pub source_account: Pubkey,
 }
 
 #[async_trait]
@@ -38,6 +44,9 @@ impl ClientService<TransactionServiceConfig> for TransactionService {
         // let validator_set = Arc::new(
         //     read_validator_set(&config.validator_set_path).unwrap_or(ValidatorSet::default()),
         // );
+        info!("Source Account: {:?}", config.source_account);
+        let source_account =
+            query_account(&config.source_account, endpoint(config.cluster.clone()));
         let mut verified_signatures: HashMap<Pubkey, (solana_sdk::message::Message, Signature)> =
             HashMap::new();
         let validator_set = config.validator_set;
