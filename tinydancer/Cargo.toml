@@ -14,8 +14,13 @@ categories = ["command-line-utilities","blockchain"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+anchor-lang = {git = "https://github.com/tinydancer-io/anchor", branch = "patch-dep"}
+anchor-client = {git = "https://github.com/tinydancer-io/anchor", branch = "patch-dep"}
 copy = { path = "../solana-spv-plugin/onchain_programs/programs/copy" }
+borsh = {version = "1.2.1", features = ["derive"]}
 tokio = {version="1.35.1", features=["full"] }
+account_proof_geyser = { git = "https://github.com/tinydancer-io/solana-spv-plugin" }
 # solana-ledger={git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch" }
 solana-rpc-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
 solana-rpc-client-api = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
