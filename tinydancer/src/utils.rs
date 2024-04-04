@@ -134,13 +134,13 @@ pub async fn send_transaction(
         .get_latest_blockhash_with_commitment(CommitmentConfig::processed())
         .await
         .unwrap();
-    println!("min slot: {:?}", slot - 300);
+    println!("min slot: {:?}", slot);
     let send_cfg = RpcSendTransactionConfig {
         skip_preflight: true,
         preflight_commitment: Some(CommitmentLevel::Processed),
         encoding: Some(UiTransactionEncoding::Base64),
         max_retries: Some(0),
-        min_context_slot: Some(slot - 300),
+        min_context_slot: Some(slot),
     };
     // let signer_c = Arc::clone(&signer);
     txn.sign(&[&signer], hash);
