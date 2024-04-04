@@ -17,6 +17,15 @@ macro_rules! block_on {
         rt.handle().block_on($func).expect($error);
     };
 }
+
+#[macro_export]
+macro_rules! datapoint_valid_signature {
+    ($key:expr, $sig:expr) => {
+        // use colored::Colorize;
+        tiny_logger::logs::info!("Validator {:?} with vote {:?} is valid", $key, $sig);
+    };
+}
+
 #[macro_export]
 macro_rules! try_coerce_shred {
     ($response:expr) => {{

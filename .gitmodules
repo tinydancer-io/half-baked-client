@@ -1,0 +1,4 @@
+[submodule "solana-spv-plugin"]
+	path = solana-spv-plugin
+	url = https://github.com/tinydancer-io/solana-spv-plugin
+  branch = "master"

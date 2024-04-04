@@ -3,27 +3,26 @@
 
 use std::{
     env,
-    sync::{Arc, Mutex, MutexGuard},
+    sync::{Arc, MutexGuard},
     thread::Result,
 };
 
 // use tokio::time::Duration;
 use crate::{
     block_on,
-    rpc_wrapper::{TransactionService, TransactionServiceConfig},
-    sampler::{ArchiveConfig, SampleService, SampleServiceConfig, SHRED_CF},
-    ui::{UiConfig, UiService},
+    transaction_service::{read_validator_set, TransactionService, TransactionServiceConfig},
 };
 use anyhow::anyhow;
 use async_trait::async_trait;
 use futures::{future::join_all, TryFutureExt};
 use rand::seq::index::sample;
 use serde::{Deserialize, Serialize};
+use solana_sdk::pubkey::Pubkey;
 use tiny_logger::logs::info;
 // use log::info;
 // use log4rs;
 use std::error::Error;
-use tokio::{runtime::Runtime, task::JoinError, try_join};
+use tokio::{runtime::Runtime, sync::Mutex, task::JoinError, try_join};
 // use std::{thread, thread::JoinHandle, time::Duration};
 
 #[async_trait]
@@ -35,44 +34,52 @@ pub trait ClientService<T> {
 }
 
 pub struct TinyDancer {
-    sample_service: SampleService,
-    ui_service: Option<UiService>,
-    sample_qty: u64,
     config: TinyDancerConfig,
     transaction_service: TransactionService,
+    epoch_validator_set: Vec<(String, u64)>,
+    // current_epoch: u64
 }
 
 #[derive(Clone)]
 pub struct TinyDancerConfig {
     pub rpc_endpoint: Cluster,
-    pub sample_qty: usize,
-    pub enable_ui_service: bool,
-    pub archive_config: ArchiveConfig,
-    pub tui_monitor: bool,
+    pub validator_set_path: String,
+    // pub archive_config: ArchiveConfig,
     pub log_path: String,
+    pub slot: u64,
+    pub copy_program: Pubkey,
+    pub copy_pda: Pubkey,
+    pub signer_path: String,
+    pub source_account: Pubkey,
 }
 
-use solana_metrics::datapoint_info;
-use std::ffi::OsString;
-use std::fs::read_dir;
-use std::io;
-use std::io::ErrorKind;
-use std::path::PathBuf;
-
+// use solana_metrics::datapoint_info;
+// use std::ffi::OsString;
+// use std::fs::read_dir;
+// use std::io;
+// use std::io::ErrorKind;
+// use std::path::PathBuf;
+//
 impl TinyDancer {
-    pub async fn start(config: TinyDancerConfig) -> Result<()> {
+    pub async fn start(config: TinyDancerConfig) -> anyhow::Result<()> {
         let status = ClientStatus::Initializing(String::from("Starting Up Tinydancer"));
 
         let client_status = Arc::new(Mutex::new(status));
-        let status_sampler = client_status.clone();
+        // let status_sampler = client_status.clone();
 
+        let validator_set =
+            read_validator_set(&config.validator_set_path).map_err(|e| anyhow!(e.to_string()))?;
+        let current_epoch = validator_set.epoch;
         let TinyDancerConfig {
-            enable_ui_service,
             rpc_endpoint,
-            sample_qty,
-            tui_monitor,
             log_path,
-            archive_config,
+            slot,
+            validator_set_path, // archive_config,
+
+            copy_program,
+            copy_pda,
+            signer_path,
+            source_account,
         } = config.clone();
         std::env::set_var("RUST_LOG", "info");
         tiny_logger::setup_file_with_default(&log_path, "RUST_LOG");
@@ -82,49 +89,39 @@ impl TinyDancer {
         opts.set_error_if_exists(false);
         opts.create_missing_column_families(true);
 
-        // setup db
-        let db = rocksdb::DB::open_cf(&opts, archive_config.clone().archive_path, vec![SHRED_CF])
-            .unwrap();
-        let db = Arc::new(db);
-
-        let sample_service_config = SampleServiceConfig {
-            cluster: rpc_endpoint.clone(),
-            archive_config,
-            instance: db.clone(),
-            status_sampler,
-            sample_qty,
+        let validator_set = match config.rpc_endpoint {
+            Cluster::Mainnet => validator_set.mainnet_beta,
+            Cluster::Testnet => validator_set.testnet,
+            Cluster::Devnet => validator_set.devnet,
+            _ => validator_set.custom,
         };
-        let sample_service = SampleService::new(sample_service_config);
+
+        let validator_set = Arc::new(Mutex::new(validator_set));
+        // setup db
+        // let db = rocksdb::DB::open_cf(&opts, archive_config.clone().archive_path, vec![SHRED_CF])
+        //     .unwrap();
+        // let db = Arc::new(db);
 
         let transaction_service = TransactionService::new(TransactionServiceConfig {
             cluster: rpc_endpoint.clone(),
-            db_instance: db.clone(),
+            // db_instance: db.clone(),
+            validator_set,
+            slot,
+            current_epoch,
+            copy_program,
+            copy_pda,
+            signer_path,
+            source_account,
         });
-
-        let ui_service = if enable_ui_service || tui_monitor {
-            Some(UiService::new(UiConfig {
-                client_status,
-                enable_ui_service,
-                tui_monitor,
-            }))
-        } else {
-            None
-        };
-
-        // run
-        sample_service
-            .join()
-            .await
-            .expect("error in sample service thread");
 
         transaction_service
             .join()
             .await
-            .expect("ERROR IN SIMPLE PAYMENT SERVICE");
+            .expect("error in transaction_service");
 
-        if let Some(ui_service) = ui_service {
-            block_on!(async { ui_service.join().await }, "Ui Service Error");
-        }
+        // if let Some(ui_service) = ui_service {
+        //     block_on!(async { ui_service.join().await }, "Ui Service Error");
+        // }
 
         Ok(())
     }
@@ -134,6 +131,7 @@ impl TinyDancer {
 pub enum Cluster {
     Mainnet,
     Devnet,
+    Testnet,
     Localnet,
     Custom(String),
 }
@@ -142,10 +140,14 @@ pub fn endpoint(cluster: Cluster) -> String {
     let cluster = cluster;
     match cluster {
         Cluster::Mainnet => String::from("https://api.mainnet-beta.solana.com"),
+        Cluster::Testnet => String::from("https://api.testnet.solana.com"),
         Cluster::Devnet => String::from("https://api.devnet.solana.com"),
         Cluster::Localnet => String::from("http://0.0.0.0:8899"),
         Cluster::Custom(url) => url,
     }
+}
+pub fn geyser_endpoint(rpc_url: String) -> String {
+    rpc_url.replace("8899", "5000").replace("http://", "")
 }
 pub enum ClientStatus {
     Initializing(String),

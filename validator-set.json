@@ -1,0 +1,18 @@
+{
+  "epoch": 583,
+  "mainnet-beta": [
+    ["HSX42dhQPTaVjtwMQXwGTCobrs1HnxZ8G2J6JTnPXpgP", 60021],
+    ["sce3PzrJU8j5Qa7WtRejXq7hFywUBh8jutVx929Hagw",0],
+    ["sce1TVNf6tBniHXqhkj7NY9wxaBsoQrpXKzfYXBG9v2",0]
+  ],
+  "testnet": [
+    ["J7v9ndmcoBuo9to2MnHegLnBkC9x3SAVbQBJo5MMJrN1",8268013],
+    ["141vSYKGRPNGieSrGJy8EeDVBcbjSr6aWkimNgrNZ6xN",6832509],
+    ["3ANJb42D3pkVtntgT6VtW2cD3icGVyoHi2NGwtXYHQAs",3435332]
+  ],
+  "devnet": [],
+
+  "custom": [
+    [    "HgvBVrFLnYAUXVxgoAqrQMiuxiFYuZ6hxE7VxgZk5YG",999999
+  ]]
+}
