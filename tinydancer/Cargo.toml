@@ -16,7 +16,7 @@ categories = ["command-line-utilities","blockchain"]
 [dependencies]
 
 anchor-lang = {git = "https://github.com/tinydancer-io/anchor", branch = "patch-dep"}
-anchor-client = {git = "https://github.com/tinydancer-io/anchor", branch = "patch-dep"}
+anchor-client = {git = "https://github.com/tinydancer-io/anchor", branch = "patch-dep", features = ["async"]}
 copy = { path = "../solana-spv-plugin/onchain_programs/programs/copy" }
 borsh = {version = "1.2.1", features = ["derive"]}
 tokio = {version="1.35.1", features=["full"] }
@@ -24,7 +24,7 @@ account_proof_geyser = { git = "https://github.com/tinydancer-io/solana-spv-plug
 # solana-ledger={git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch" }
 solana-rpc-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
 solana-rpc-client-api = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version="1.18.7"}
-# solana-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}
+solana-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}
 solana-sdk = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch", version = "1.18.7"}
 # solana-tpu-client = {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}
 # solana-version= {git="https://github.com/tinydancer-io/solana-1.18", branch="v1.18.7-branch"}

@@ -231,7 +231,7 @@ dependencies = [
  "regex",
  "serde",
  "solana-account-decoder 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "solana-client",
+ "solana-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-sdk",
  "thiserror",
  "tokio",
@@ -4159,7 +4159,23 @@ dependencies = [
  "chrono",
  "clap 2.34.0",
  "rpassword",
- "solana-remote-wallet",
+ "solana-remote-wallet 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-sdk",
+ "thiserror",
+ "tiny-bip39",
+ "uriparse",
+ "url",
+]
+
+[[package]]
+name = "solana-clap-utils"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "chrono",
+ "clap 2.34.0",
+ "rpassword",
+ "solana-remote-wallet 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-sdk",
  "thiserror",
  "tiny-bip39",
@@ -4183,19 +4199,51 @@ dependencies = [
  "log",
  "quinn",
  "rayon",
- "solana-connection-cache",
+ "solana-connection-cache 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-measure 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-metrics 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "solana-pubsub-client",
- "solana-quic-client",
+ "solana-pubsub-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-quic-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client-api 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "solana-rpc-client-nonce-utils",
+ "solana-rpc-client-nonce-utils 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-sdk",
- "solana-streamer",
- "solana-thin-client",
- "solana-tpu-client",
- "solana-udp-client",
+ "solana-streamer 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-thin-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-tpu-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-udp-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "solana-client"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "async-trait",
+ "bincode",
+ "dashmap",
+ "futures",
+ "futures-util",
+ "indexmap 2.2.6",
+ "indicatif",
+ "log",
+ "quinn",
+ "rayon",
+ "solana-connection-cache 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-measure 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-metrics 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-pubsub-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-quic-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client-api 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client-nonce-utils 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-sdk",
+ "solana-streamer 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-thin-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-tpu-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-udp-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "thiserror",
  "tokio",
 ]
@@ -4253,6 +4301,27 @@ dependencies = [
  "rcgen",
  "solana-measure 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-metrics 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-sdk",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "solana-connection-cache"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "async-trait",
+ "bincode",
+ "crossbeam-channel",
+ "futures-util",
+ "indexmap 2.2.6",
+ "log",
+ "rand 0.8.5",
+ "rayon",
+ "rcgen",
+ "solana-measure 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-metrics 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-sdk",
  "thiserror",
  "tokio",
@@ -4468,6 +4537,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-net-utils"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "bincode",
+ "clap 3.2.25",
+ "crossbeam-channel",
+ "log",
+ "nix",
+ "rand 0.8.5",
+ "serde",
+ "serde_derive",
+ "socket2",
+ "solana-logger 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-sdk",
+ "solana-version 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "tokio",
+ "url",
+]
+
+[[package]]
 name = "solana-nohash-hasher"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4665,6 +4755,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-pubsub-client"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "crossbeam-channel",
+ "futures-util",
+ "log",
+ "reqwest",
+ "semver",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "solana-account-decoder 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client-api 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-sdk",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tokio-tungstenite",
+ "tungstenite",
+ "url",
+]
+
+[[package]]
 name = "solana-quic-client"
 version = "1.18.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4680,13 +4794,39 @@ dependencies = [
  "quinn-proto",
  "rcgen",
  "rustls",
- "solana-connection-cache",
+ "solana-connection-cache 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-measure 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-metrics 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "solana-net-utils",
+ "solana-net-utils 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client-api 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-sdk",
- "solana-streamer",
+ "solana-streamer 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "solana-quic-client"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "async-mutex",
+ "async-trait",
+ "futures",
+ "itertools",
+ "lazy_static",
+ "log",
+ "quinn",
+ "quinn-proto",
+ "rcgen",
+ "rustls",
+ "solana-connection-cache 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-measure 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-metrics 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-net-utils 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client-api 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-sdk",
+ "solana-streamer 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "thiserror",
  "tokio",
 ]
@@ -4715,6 +4855,24 @@ name = "solana-remote-wallet"
 version = "1.18.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8badec322617e1df5b24595e4b820e2020079f97ff3323257eedcbd235ca6a94"
+dependencies = [
+ "console",
+ "dialoguer",
+ "log",
+ "num-derive 0.4.2",
+ "num-traits",
+ "parking_lot",
+ "qstring",
+ "semver",
+ "solana-sdk",
+ "thiserror",
+ "uriparse",
+]
+
+[[package]]
+name = "solana-remote-wallet"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
 dependencies = [
  "console",
  "dialoguer",
@@ -4830,8 +4988,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57ca470c2187e43ad54ce1edcfe32a8105329f3ea37b095658e67e62083968a9"
 dependencies = [
  "clap 2.34.0",
- "solana-clap-utils",
+ "solana-clap-utils 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-sdk",
+ "thiserror",
+]
+
+[[package]]
+name = "solana-rpc-client-nonce-utils"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "clap 2.34.0",
+ "solana-clap-utils 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-sdk",
  "thiserror",
 ]
@@ -5031,6 +5201,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-streamer"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "async-channel",
+ "bytes",
+ "crossbeam-channel",
+ "futures-util",
+ "histogram",
+ "indexmap 2.2.6",
+ "itertools",
+ "libc",
+ "log",
+ "nix",
+ "pem",
+ "percentage",
+ "pkcs8",
+ "quinn",
+ "quinn-proto",
+ "rand 0.8.5",
+ "rcgen",
+ "rustls",
+ "solana-metrics 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-perf 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-sdk",
+ "thiserror",
+ "tokio",
+ "x509-parser",
+]
+
+[[package]]
 name = "solana-system-program"
 version = "1.18.7"
 source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
@@ -5052,9 +5253,23 @@ dependencies = [
  "bincode",
  "log",
  "rayon",
- "solana-connection-cache",
+ "solana-connection-cache 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client-api 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-sdk",
+]
+
+[[package]]
+name = "solana-thin-client"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "bincode",
+ "log",
+ "rayon",
+ "solana-connection-cache 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client-api 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-sdk",
 ]
 
@@ -5071,12 +5286,35 @@ dependencies = [
  "indicatif",
  "log",
  "rayon",
- "solana-connection-cache",
+ "solana-connection-cache 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-measure 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-metrics 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "solana-pubsub-client",
+ "solana-pubsub-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-rpc-client-api 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-sdk",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "solana-tpu-client"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "async-trait",
+ "bincode",
+ "futures-util",
+ "indexmap 2.2.6",
+ "indicatif",
+ "log",
+ "rayon",
+ "solana-connection-cache 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-measure 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-metrics 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-pubsub-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-rpc-client-api 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-sdk",
  "thiserror",
  "tokio",
@@ -5138,10 +5376,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c319b9497d56475781c9b9b3ccc40f58238ffe9ded9d4f9faf20671a2e7c5f0c"
 dependencies = [
  "async-trait",
- "solana-connection-cache",
- "solana-net-utils",
+ "solana-connection-cache 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-net-utils 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "solana-sdk",
- "solana-streamer",
+ "solana-streamer 1.18.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "solana-udp-client"
+version = "1.18.7"
+source = "git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch#0d2342eaae65bac35d1d81cfeed4db5135974c93"
+dependencies = [
+ "async-trait",
+ "solana-connection-cache 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-net-utils 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
+ "solana-sdk",
+ "solana-streamer 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "thiserror",
  "tokio",
 ]
@@ -5837,6 +6089,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "solana-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-rpc-client 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-rpc-client-api 1.18.7 (git+https://github.com/tinydancer-io/solana-1.18?branch=v1.18.7-branch)",
  "solana-sdk",

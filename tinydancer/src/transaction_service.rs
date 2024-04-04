@@ -2,7 +2,7 @@ use std::{str::FromStr, sync::Arc};
 
 use crate::{
     convert_to_websocket, datapoint_valid_signature, send_rpc_call,
-    tinydancer::{endpoint, ClientService, Cluster},
+    tinydancer::{endpoint, geyser_endpoint, ClientService, Cluster},
     utils::{monitor_and_verify_updates, query_account, send_transaction},
     ValidatorSet,
 };
@@ -49,24 +49,34 @@ impl ClientService<TransactionServiceConfig> for TransactionService {
         let validator_set = config.validator_set;
         // let slot = config.slot;
 
+        let keypair = Arc::new(
+            read_keypair_file(config.signer_path)
+                .unwrap()
+                .insecure_clone(),
+        );
         let handler = tokio::spawn(async move {
             info!("Source Account: {:?}", config.source_account);
             info!("Copy Account: {:?}", config.copy_pda);
             let source_account_data =
-                query_account(&config.source_account, endpoint(config.cluster.clone()));
-            let keypair = read_keypair_file(config.signer_path).unwrap();
-
+                query_account(&config.source_account, endpoint(config.cluster.clone())).await;
+            let keypair = Arc::clone(&keypair);
             let rpc_url = endpoint(config.cluster);
-            send_transaction(
+            let sig = send_transaction(
                 keypair,
                 rpc_url.clone(),
                 convert_to_websocket!(rpc_url),
                 config.copy_program,
                 &config.source_account,
                 config.copy_pda,
-            );
-            println!("Sent txn!");
-            monitor_and_verify_updates(&config.source_account, &source_account_data).await;
+            )
+            .await;
+            println!("Sent txn!: {:?}", sig);
+            monitor_and_verify_updates(
+                geyser_endpoint(rpc_url),
+                &config.source_account,
+                &source_account_data,
+            )
+            .await;
             // let vote_pubkeys: Vec<String> = validator_set
             //     .lock()
             //     .await

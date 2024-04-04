@@ -1,16 +1,21 @@
 use alloc::rc::Rc;
 use anchor_client::{Client, Cluster};
-use solana_rpc_client::rpc_client::RpcClient;
+use solana_client::rpc_config::RpcSendTransactionConfig;
+use solana_rpc_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::account::Account;
 use solana_sdk::commitment_config::{CommitmentConfig, CommitmentLevel};
 use solana_sdk::pubkey::Pubkey;
 use solana_sdk::signature::{Keypair, Signature, Signer};
+use solana_transaction_status::UiTransactionEncoding;
+// use solana_transaction_status::UiTransactionEncoding;
+// use solana_transaction_status::{UiTransaction, UiTransactionEncoding};
 use std::str::FromStr;
+use std::sync::Arc;
 use std::time::Duration;
-pub fn query_account(addr: &Pubkey, url: String) -> Account {
+pub async fn query_account(addr: &Pubkey, url: String) -> Account {
     // let url = DEFAULT_RPC_URL.to_string();
     let client = RpcClient::new(url);
-    client.get_account(addr).unwrap()
+    client.get_account(addr).await.unwrap()
 }
 use account_proof_geyser::types::Update;
 use account_proof_geyser::utils::verify_leaves_against_bankhash;
@@ -23,11 +28,12 @@ use tokio::net::TcpStream;
 use tokio::runtime::Runtime;
 extern crate alloc;
 pub async fn monitor_and_verify_updates(
+    geyser_ip: String,
     rpc_pubkey: &Pubkey,
     rpc_account: &Account,
 ) -> anyhow::Result<()> {
-    println!("starting monitor");
-    let mut stream = TcpStream::connect("127.0.0.1:5000")
+    println!("starting monitor: {:?}", geyser_ip);
+    let mut stream = TcpStream::connect(&geyser_ip)
         .await
         .expect("unable to connect to 127.0.0.1 on port 5000");
     println!("got stream");
@@ -70,6 +76,7 @@ pub async fn monitor_and_verify_updates(
             "\nBankHash proof verification succeeded for account with Pubkey: {:?} in slot {}",
             &p.0, slot_num
         );
+        println!("Bankhash is: {:?}", received_update.root);
         let copy_account: CopyAccount =
             anchor_lang::AccountDeserialize::try_deserialize(&mut p.1 .0.account.data.as_slice())?;
         let rpc_account_hash = account_hasher(
@@ -89,8 +96,8 @@ pub async fn monitor_and_verify_updates(
     Ok(())
 }
 
-pub fn send_transaction(
-    signer: Keypair,
+pub async fn send_transaction(
+    signer: Arc<Keypair>,
     rpc_url: String,
     ws_url: String,
     copy_program: Pubkey,
@@ -98,13 +105,14 @@ pub fn send_transaction(
     copy_pda: Pubkey,
 ) -> anyhow::Result<Signature> {
     let creator_pubkey = signer.pubkey();
-    let c = Client::new(
+    let c = Arc::new(Client::new_with_options(
         Cluster::Custom(rpc_url.clone(), ws_url.clone()),
-        Rc::new(signer.insecure_clone()),
-    );
+        signer.clone(),
+        CommitmentConfig::confirmed(),
+    ));
     let prog = c.program(copy_program).unwrap();
     let copy_pda_bump = Pubkey::find_program_address(&[b"copy_hash"], &copy_program).1;
-    let signature = prog
+    let mut txn = prog
         .request()
         .accounts(copy_accounts::CopyHash {
             creator: creator_pubkey,
@@ -119,6 +127,30 @@ pub fn send_transaction(
         .options(CommitmentConfig {
             commitment: CommitmentLevel::Processed,
         })
-        .send()?;
+        .transaction()?;
+
+    let client = RpcClient::new_with_commitment(rpc_url.clone(), CommitmentConfig::confirmed());
+    let (hash, slot) = client
+        .get_latest_blockhash_with_commitment(CommitmentConfig::processed())
+        .await
+        .unwrap();
+    println!("min slot: {:?}", slot - 300);
+    let send_cfg = RpcSendTransactionConfig {
+        skip_preflight: true,
+        preflight_commitment: Some(CommitmentLevel::Processed),
+        encoding: Some(UiTransactionEncoding::Base64),
+        max_retries: Some(0),
+        min_context_slot: Some(slot - 300),
+    };
+    // let signer_c = Arc::clone(&signer);
+    txn.sign(&[&signer], hash);
+    let signature = client
+        .send_and_confirm_transaction_with_spinner_and_config(
+            &txn,
+            CommitmentConfig::processed(),
+            send_cfg,
+        )
+        .await?;
+    println!("{:?}", signature.to_string());
     Ok(signature)
 }

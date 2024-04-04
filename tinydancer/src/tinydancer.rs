@@ -146,6 +146,9 @@ pub fn endpoint(cluster: Cluster) -> String {
         Cluster::Custom(url) => url,
     }
 }
+pub fn geyser_endpoint(rpc_url: String) -> String {
+    rpc_url.replace("8899", "5000").replace("http://", "")
+}
 pub enum ClientStatus {
     Initializing(String),
     SearchingForRPCService(String),
