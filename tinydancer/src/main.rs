@@ -24,10 +24,10 @@
 //!     
 //! }
 //! })
-#![feature(async_closure)]
+// #![feature(async_closure)]
 #![allow(unused_imports)]
 #![allow(dead_code)]
-#![feature(mutex_unlock)]
+// #![feature(mutex_unlock)]
 mod tinydancer;
 use crossterm::style::Stylize;
 use reqwest::header::{ACCEPT, CONTENT_TYPE};

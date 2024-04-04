@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::Duration;
 use std::{any::Any, thread::Thread};
-use std::{fmt, thread::JoinHandle};
+use std::{fmt, mem::drop, thread::JoinHandle};
 use thiserror::Error;
 use tiny_logger::logs::info;
 use tui::layout::Rect;
@@ -245,7 +245,7 @@ impl ClientService<UiConfig> for UiService {
                         }
                         _ => {}
                     }
-                    Mutex::unlock(status);
+                    drop(status);
                     enable_raw_mode();
                     if crossterm::event::poll(Duration::from_millis(100)).unwrap() {
                         let ev = crossterm::event::read().unwrap();
@@ -262,7 +262,7 @@ impl ClientService<UiConfig> for UiService {
                             *status = ClientStatus::ShuttingDown(String::from(
                                 "Shutting Down Gracefully...",
                             ));
-                            Mutex::unlock(status);
+                            drop(status);
                             disable_raw_mode();
                         }
                     }
