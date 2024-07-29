@@ -5521,19 +5521,25 @@ dependencies = [
 
 [[package]]
 name = "spl-token-2022"
-version = "0.5.0"
+version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0edb869dbe159b018f17fb9bfa67118c30f232d7f54a73742bc96794dff77ed8"
+checksum = "b9fec83597cf7be923c5c3bdfd2fcc08cdfacd2eeb6c4e413da06b6916f50827"
 dependencies = [
  "arrayref",
  "bytemuck",
  "num-derive",
  "num-traits",
  "num_enum",
- "solana-program 1.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "solana-zk-token-sdk 1.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "solana-program",
+ "solana-security-txt",
+ "solana-zk-token-sdk",
  "spl-memo",
+ "spl-pod",
  "spl-token",
+ "spl-token-group-interface",
+ "spl-token-metadata-interface",
+ "spl-transfer-hook-interface",
+ "spl-type-length-value",
  "thiserror",
 ]
 
